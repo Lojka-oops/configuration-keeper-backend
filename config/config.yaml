@@ -1,0 +1,6 @@
+db:
+  connection_string: postgres://viktorm:123456@localhost/configuru
+
+basic_auth:
+  username: stanleyjobson
+  password: swordfish
