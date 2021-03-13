@@ -5,7 +5,6 @@ from databases import Database
 from sqlalchemy import desc, func, select
 
 from models.applications import applications_table
-from models.environments import environments_table
 from schemas import applications_schemas
 from .environment_service import EnvironmentService
 

@@ -5,7 +5,6 @@ from databases import Database
 from sqlalchemy import desc, func, select, and_
 
 from models.environments import environments_table
-from models.variables import variables_table
 from schemas import environments_schemas
 from .variable_service import VariableService
 
@@ -239,6 +238,11 @@ class EnvironmentService():
                     is_deleted=True,
                     deleted_at=datetime.now()
                 )
+                .returning(
+                    environments_table.c.id,
+                )
             )
-            await self.database.execute(query)
-            await self.var_service.delete_vars_for_env(env_id)
+            updated_envs = await self.database.fetch_all(query)
+
+        for env in updated_envs:
+            await self.var_service.delete_vars_for_env(env['id'])

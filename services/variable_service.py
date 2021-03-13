@@ -182,7 +182,7 @@ class VariableService():
     async def delete_vars_for_env(self, env_id):
         """Deletes all variables by environmetn identifier
 
-        :param `env_id` - identifier of environmetn
+        :param `env_id` - identifier of environment
 
         """
 
