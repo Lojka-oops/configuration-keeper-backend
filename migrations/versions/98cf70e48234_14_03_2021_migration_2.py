@@ -22,7 +22,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('entity_type', sa.String(length=100), nullable=False),
     sa.Column('entity_id', sa.Integer(), nullable=False),
-    sa.Column('action', sa.Enum('create', 'update', 'delete', name='changeactions'), nullable=False),
     sa.Column('field', sa.String(length=100), nullable=True),
     sa.Column('old_value', sa.String(), nullable=True),
     sa.Column('new_value', sa.String(), nullable=True),
