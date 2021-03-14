@@ -9,7 +9,7 @@ from alembic import context
 
 sys.path.append(os.getcwd())
 
-from models import applications, environments, variables
+from models import applications, environments, variables, change_history
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -26,7 +26,8 @@ fileConfig(config.config_file_name)
 target_metadata = [
     applications.metadata,
     environments.metadata,
-    variables.metadata
+    variables.metadata,
+    change_history.metadata
 ]
 
 # other values from the config, defined by the needs of env.py,
