@@ -17,7 +17,7 @@ class ApplicationService():
     def __init__(
         self,
         database: Database,
-        env_service: EnvironmentService,
+        env_service: EnvironmentService
     ) -> None:
         """Construct a new :class: `ApplicationService`
 
@@ -48,8 +48,7 @@ class ApplicationService():
                 .values(
                     name=app.name,
                     description=app.description,
-                    created_at=datetime.now(),
-                    updated_at=datetime.now()
+                    created_at=datetime.now()
                 )
                 .returning(
                     applications_table.c.id,

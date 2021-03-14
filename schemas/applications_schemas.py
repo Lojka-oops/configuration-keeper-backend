@@ -13,7 +13,7 @@ class ApplicationBaseSchema(BaseModel):
     name: str = Field(..., description="Application name")
     description: Optional[str] = Field(None, description="Application description")
     created_at: datetime = Field(..., description="Application creation date")
-    updated_at: datetime = Field(..., description="Application updation date")
+    updated_at: Optional[datetime] = Field(None, description="Application updation date")
 
 
 class ApplicationCreateSchema(BaseModel):

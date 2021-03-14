@@ -43,8 +43,7 @@ class VariableService():
                     name=var.name,
                     value=var.value,
                     env_id=var.env_id,
-                    created_at=datetime.now(),
-                    updated_at=datetime.now()
+                    created_at=datetime.now()
                 )
                 .returning(
                     variables_table.c.id,

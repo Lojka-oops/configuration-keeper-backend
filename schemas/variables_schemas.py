@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +13,7 @@ class VariableBaseSchema(BaseModel):
     name: str = Field(..., description="Variable name")
     value: str = Field(..., description="Variable value")
     created_at: datetime = Field(..., description="Variable creation date")
-    updated_at: datetime = Field(..., description="Variable updation date")
+    updated_at: Optional[datetime] = Field(None, description="Variable updation date")
 
 
 class VariableCreateSchema(BaseModel):

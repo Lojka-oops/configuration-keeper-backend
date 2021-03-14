@@ -52,8 +52,7 @@ class EnvironmentService():
                     name=env.name,
                     description=env.description,
                     app_id=env.app_id,
-                    created_at=datetime.now(),
-                    updated_at=datetime.now()
+                    created_at=datetime.now()
                 )
                 .returning(
                     environments_table.c.id,

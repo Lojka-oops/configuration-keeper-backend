@@ -14,7 +14,7 @@ class EnvironmentBaseSchema(BaseModel):
     code: UUID4 = Field(..., description="Environment unique code")
     description: Optional[str] = Field(None, description="Environment description")
     created_at: datetime = Field(..., description="Environment creation date")
-    updated_at: datetime = Field(..., description="Environment updation date")
+    updated_at: Optional[datetime] = Field(None, description="Environment updation date")
 
     @validator("code")
     def hexlify_token(cls, value):
