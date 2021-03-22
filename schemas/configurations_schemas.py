@@ -7,7 +7,7 @@ from schemas.variables_schemas import VariableSchema
 
 
 class ConfigurationSchema(BaseModel):
-    """Returns basic configuration data
+    """Returns configuration data
     
     """
 

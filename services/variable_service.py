@@ -50,7 +50,9 @@ class VariableService():
                     variables_table.c.name,
                     variables_table.c.value,
                     variables_table.c.created_at,
-                    variables_table.c.updated_at
+                    variables_table.c.updated_at,
+                    variables_table.c.deleted_at,
+                    variables_table.c.is_deleted
                 )
             )
 
@@ -82,7 +84,9 @@ class VariableService():
                     variables_table.c.name,
                     variables_table.c.value,
                     variables_table.c.created_at,
-                    variables_table.c.updated_at
+                    variables_table.c.updated_at,
+                    variables_table.c.deleted_at,
+                    variables_table.c.is_deleted
                 ]
             )
             .select_from(variables_table)
@@ -154,7 +158,9 @@ class VariableService():
                     variables_table.c.name,
                     variables_table.c.value,
                     variables_table.c.created_at,
-                    variables_table.c.updated_at
+                    variables_table.c.updated_at,
+                    variables_table.c.deleted_at,
+                    variables_table.c.is_deleted
                 )
             )
             

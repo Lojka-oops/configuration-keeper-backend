@@ -55,7 +55,9 @@ class ApplicationService():
                     applications_table.c.name,
                     applications_table.c.description,
                     applications_table.c.created_at,
-                    applications_table.c.updated_at
+                    applications_table.c.updated_at,
+                    applications_table.c.deleted_at,
+                    applications_table.c.is_deleted
                 )
             )
 
@@ -85,7 +87,9 @@ class ApplicationService():
                     applications_table.c.name,
                     applications_table.c.description,
                     applications_table.c.created_at,
-                    applications_table.c.updated_at
+                    applications_table.c.updated_at,
+                    applications_table.c.deleted_at,
+                    applications_table.c.is_deleted
                 ]
             )
             .select_from(applications_table)
@@ -143,7 +147,9 @@ class ApplicationService():
                     applications_table.c.name,
                     applications_table.c.description,
                     applications_table.c.created_at,
-                    applications_table.c.updated_at
+                    applications_table.c.updated_at,
+                    applications_table.c.deleted_at,
+                    applications_table.c.is_deleted
                 )
             )
 

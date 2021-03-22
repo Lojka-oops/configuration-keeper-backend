@@ -60,7 +60,9 @@ class EnvironmentService():
                     environments_table.c.code,
                     environments_table.c.description,
                     environments_table.c.created_at,
-                    environments_table.c.updated_at
+                    environments_table.c.updated_at,
+                    environments_table.c.deleted_at,
+                    environments_table.c.is_deleted
                 )
             )
 
@@ -94,7 +96,9 @@ class EnvironmentService():
                     environments_table.c.code,
                     environments_table.c.description,
                     environments_table.c.created_at,
-                    environments_table.c.updated_at
+                    environments_table.c.updated_at,
+                    environments_table.c.deleted_at,
+                    environments_table.c.is_deleted
                 ]
             )
             .select_from(environments_table)
@@ -114,14 +118,13 @@ class EnvironmentService():
     async def get_env_by_code(
         self, 
         code: str
-    ) -> environments_schemas.EnvironmentSchema:
+    ) -> dict:
         """Selects an environment from the database 
         that matches the passed code
 
         :param `code` - unique code of environment
 
-        :return an instance of `environments_schemas.EnvironmentSchema`
-        which provide details about the environment
+        :return dictionary with two fields `id` and `name`
 
         """
 
@@ -197,7 +200,9 @@ class EnvironmentService():
                     environments_table.c.code,
                     environments_table.c.description,
                     environments_table.c.created_at,
-                    environments_table.c.updated_at
+                    environments_table.c.updated_at,
+                    environments_table.c.deleted_at,
+                    environments_table.c.is_deleted
                 )
             )
 
