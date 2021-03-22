@@ -26,13 +26,13 @@ class VariableService():
     async def create_var(
         self, 
         var: variables_schemas.VariableCreateSchema
-    ) -> variables_schemas.VariableBaseSchema:
+    ) -> variables_schemas.VariableSchema:
         """Creates a new variable according to the passed data
 
         :param `app` -  an instance of `variables_schemas.VariableCreateSchema`
         which provide data to create an variable
 
-        :return an instance of `variables_schemas.VariableBaseSchema`
+        :return an instance of `variables_schemas.VariableSchema`
         which provide base variable data
 
         """
@@ -61,7 +61,7 @@ class VariableService():
         env_id: int,
         page: int = None,
         per_page: int = None
-    ) -> List[variables_schemas.VariableBaseSchema]:
+    ) -> List[variables_schemas.VariableSchema]:
         """Selects all variables for environment from the database
 
         :param `env_id` - environment identifier
@@ -70,7 +70,7 @@ class VariableService():
 
         :param `per_page` - number of entities on one page
 
-        :return list of `variables_schemas.VariableBaseSchema`
+        :return list of `variables_schemas.VariableSchema`
         which provide base variable data
 
         """
@@ -127,7 +127,7 @@ class VariableService():
         self,
         var_id: int,
         var: variables_schemas.VariableCreateSchema
-    ) -> variables_schemas.VariableBaseSchema:
+    ) -> variables_schemas.VariableSchema:
         """Updates an variable according to the passed data
 
         :param `var_id` - identifier of variable
@@ -135,7 +135,7 @@ class VariableService():
         :param `var` - an instance of `variables_schemas.VariableCreateSchema`
         which provide data to update an variable
 
-        :return an instance of `variables_schemas.VariableBaseSchema`
+        :return an instance of `variables_schemas.VariableSchema`
         which provide base variable data
 
         """

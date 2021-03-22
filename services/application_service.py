@@ -32,13 +32,13 @@ class ApplicationService():
     async def create_app(
         self, 
         app: applications_schemas.ApplicationCreateSchema
-    ) -> applications_schemas.ApplicationBaseSchema:
+    ) -> applications_schemas.ApplicationSchema:
         """Creates a new application according to the passed data
 
         :param `app` -  an instance of `applications_schemas.ApplicationCreateSchema`
         which provide data to create an application
 
-        :return an instance of `applications_schemas.ApplicationBaseSchema`
+        :return an instance of `applications_schemas.ApplicationSchema`
         which provide application data
 
         """
@@ -65,14 +65,14 @@ class ApplicationService():
         self,
         page: int,
         per_page: int
-    ) -> List[applications_schemas.ApplicationBaseSchema]:
+    ) -> List[applications_schemas.ApplicationSchema]:
         """Selects all applications from the database
 
         :param `page` - page number
 
         :param `per_page` - number of entities on one page
 
-        :return list of `applications_schemas.ApplicationBaseSchema`
+        :return list of `applications_schemas.ApplicationSchema`
         which provide application data
 
         """
@@ -116,7 +116,7 @@ class ApplicationService():
         self,
         app_id: int,
         app: applications_schemas.ApplicationCreateSchema
-    ) -> applications_schemas.ApplicationBaseSchema:
+    ) -> applications_schemas.ApplicationSchema:
         """Updates an application according to the passed data
 
         :param `app_id` - identifier of application
@@ -124,7 +124,7 @@ class ApplicationService():
         :param `app` - an instance of `applications_schemas.ApplicationCreateSchema`
         which provide data to update an application
 
-        :return an instance of `applications_schemas.ApplicationBaseSchema`
+        :return an instance of `applications_schemas.ApplicationSchema`
         which provide application data
 
         """

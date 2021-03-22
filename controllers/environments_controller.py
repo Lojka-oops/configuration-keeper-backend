@@ -10,7 +10,7 @@ router = APIRouter(tags=['environments'])
 
 @router.post(
     "/environments", 
-    response_model=environments_schemas.EnvironmentBaseSchema, 
+    response_model=environments_schemas.EnvironmentSchema, 
     status_code=201
 )
 @inject
@@ -27,7 +27,7 @@ async def create_environment(
     return environment
 
 
-@router.put("/environments/{env_id}", response_model=environments_schemas.EnvironmentBaseSchema)
+@router.put("/environments/{env_id}", response_model=environments_schemas.EnvironmentSchema)
 @inject
 async def update_environment(
     env_id: int, 

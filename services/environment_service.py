@@ -35,13 +35,13 @@ class EnvironmentService():
     async def create_env(
         self,
         env: environments_schemas.EnvironmentCreateSchema
-    ) -> environments_schemas.EnvironmentBaseSchema:
+    ) -> environments_schemas.EnvironmentSchema:
         """Creates a new environment according to the passed data
 
         :param `env` -  an instance of `environments_schemas.EnvironmentCreateSchema`
         which provide data to create an environment
 
-        :return an instance of `environments_schemas.EnvironmentBaseSchema`
+        :return an instance of `environments_schemas.EnvironmentSchema`
         which provide base environment data
 
         """
@@ -71,7 +71,7 @@ class EnvironmentService():
         app_id: int,
         page: int,
         per_page: int
-    ) -> List[environments_schemas.EnvironmentBaseSchema]:
+    ) -> List[environments_schemas.EnvironmentSchema]:
         """Selects all environments for application from the database
 
         :param `app_id` - application identifier
@@ -80,7 +80,7 @@ class EnvironmentService():
 
         :param `per_page` - number of entities on one page
 
-        :return list of `environments_schemas.EnvironmentBaseSchema`
+        :return list of `environments_schemas.EnvironmentSchema`
         which provide base environment data
 
         """
@@ -114,13 +114,13 @@ class EnvironmentService():
     async def get_env_by_code(
         self, 
         code: str
-    ) -> environments_schemas.EnvironmentBaseSchema:
+    ) -> environments_schemas.EnvironmentSchema:
         """Selects an environment from the database 
         that matches the passed code
 
         :param `code` - unique code of environment
 
-        :return an instance of `environments_schemas.EnvironmentBaseSchema`
+        :return an instance of `environments_schemas.EnvironmentSchema`
         which provide details about the environment
 
         """
@@ -169,7 +169,7 @@ class EnvironmentService():
         self,
         env_id: int,
         env: environments_schemas.EnvironmentCreateSchema
-    ) -> environments_schemas.EnvironmentBaseSchema:
+    ) -> environments_schemas.EnvironmentSchema:
         """Updates an environment according to the passed data
 
         :param `env_id` - identifier of environment
@@ -177,7 +177,7 @@ class EnvironmentService():
         :param `env` - an instance of `environments_schemas.EnvironmentCreateSchema`
         which provide data to update an environment
 
-        :return an instance of `environments_schemas.EnvironmentBaseSchema`
+        :return an instance of `environments_schemas.EnvironmentSchema`
         which provide base environment data
 
         """

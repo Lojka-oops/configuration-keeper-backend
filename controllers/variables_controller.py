@@ -8,7 +8,7 @@ from containers import Container
 router = APIRouter(tags=['variables'])
 
 
-@router.post("/variables", response_model=variables_schemas.VariableBaseSchema, status_code=201)
+@router.post("/variables", response_model=variables_schemas.VariableSchema, status_code=201)
 @inject
 async def create_variable(
     variable: variables_schemas.VariableCreateSchema, 
@@ -23,7 +23,7 @@ async def create_variable(
     return variable
 
 
-@router.put("/variables/{var_id}", response_model=variables_schemas.VariableBaseSchema)
+@router.put("/variables/{var_id}", response_model=variables_schemas.VariableSchema)
 @inject
 async def update_variable(
     var_id: int, 

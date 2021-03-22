@@ -3,17 +3,16 @@ from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
+from .base_schema import BaseSchema
 
-class ApplicationBaseSchema(BaseModel):
-    """Returns basic application data
+
+class ApplicationSchema(BaseSchema):
+    """Returns application data
     
     """
 
-    id: int = Field(..., description="Application identifier")
     name: str = Field(..., description="Application name")
-    description: Optional[str] = Field(None, description="Application description")
-    created_at: datetime = Field(..., description="Application creation date")
-    updated_at: Optional[datetime] = Field(None, description="Application updation date")
+    description: str = Field(None, description="Application description")
 
 
 class ApplicationCreateSchema(BaseModel):
@@ -25,19 +24,10 @@ class ApplicationCreateSchema(BaseModel):
     description: Optional[str] = Field(None, description="Application description")
 
 
-class ApplicationDetailsSchema(ApplicationBaseSchema):
-    """Returns detail application data
-    
-    """
-
-    is_deleted: bool = Field(..., description="Application deletion indicator")
-    deleted_at: datetime = Field(..., description="Application deletion date")
-
-
 class ApplicationsListSchema(BaseModel):
     """Returns list of applications with total count
     
     """
 
     total_count: int = Field(..., description="Total count of applications")
-    data: List[ApplicationBaseSchema] = Field(..., description="List of applications")
+    data: List[ApplicationSchema] = Field(..., description="List of applications")

@@ -8,7 +8,7 @@ from containers import Container
 router = APIRouter(tags=['applications'])
 
 
-@router.post("/applications", response_model=applications_schemas.ApplicationBaseSchema, status_code=201)
+@router.post("/applications", response_model=applications_schemas.ApplicationSchema, status_code=201)
 @inject
 async def create_app(
     app: applications_schemas.ApplicationCreateSchema, 
@@ -23,7 +23,7 @@ async def create_app(
     return app
 
 
-@router.put("/applications/{app_id}", response_model=applications_schemas.ApplicationBaseSchema)
+@router.put("/applications/{app_id}", response_model=applications_schemas.ApplicationSchema)
 @inject
 async def update_app(
     app_id: int, 

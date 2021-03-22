@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
-from schemas.variables_schemas import VariableBaseSchema
+from schemas.variables_schemas import VariableSchema
 
 
 class ConfigurationSchema(BaseModel):
@@ -12,4 +12,4 @@ class ConfigurationSchema(BaseModel):
     """
 
     environment_name: str = Field(..., description="Environment name")
-    variables: List[VariableBaseSchema] = Field(..., description="List of environment variables")
+    variables: List[VariableSchema] = Field(..., description="List of environment variables")
