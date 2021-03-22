@@ -7,6 +7,7 @@ from services.environment_service import EnvironmentService
 from helpers.dependencies import basic_auth
 from containers import Container
 
+
 router = APIRouter(tags=['configurations'])
 
 

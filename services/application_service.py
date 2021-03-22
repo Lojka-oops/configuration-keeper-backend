@@ -6,10 +6,11 @@ from sqlalchemy import desc, func, select
 
 from models.applications import applications_table
 from schemas import applications_schemas
+from .base_service import BaseService
 from .environment_service import EnvironmentService
 
 
-class ApplicationService():
+class ApplicationService(BaseService):
     """Service for working with application entities
 
     """
@@ -29,13 +30,13 @@ class ApplicationService():
         self.database = database
         self.env_service = env_service
 
-    async def create_app(
+    async def create(
         self, 
-        app: applications_schemas.ApplicationCreateSchema
+        data: applications_schemas.ApplicationCreateSchema
     ) -> applications_schemas.ApplicationSchema:
         """Creates a new application according to the passed data
 
-        :param `app` -  an instance of `applications_schemas.ApplicationCreateSchema`
+        :param `data` -  an instance of `applications_schemas.ApplicationCreateSchema`
         which provide data to create an application
 
         :return an instance of `applications_schemas.ApplicationSchema`
@@ -46,8 +47,8 @@ class ApplicationService():
         async with self.database.transaction():
             query = (applications_table.insert()
                 .values(
-                    name=app.name,
-                    description=app.description,
+                    name=data.name,
+                    description=data.description,
                     created_at=datetime.now()
                 )
                 .returning(
@@ -62,6 +63,64 @@ class ApplicationService():
             )
 
             return await self.database.fetch_one(query)
+
+    async def update(
+        self,
+        id: int,
+        data: applications_schemas.ApplicationCreateSchema
+    ) -> applications_schemas.ApplicationSchema:
+        """Updates an application according to the passed data
+
+        :param `id` - identifier of application
+
+        :param `data` - an instance of `applications_schemas.ApplicationCreateSchema`
+        which provide data to update an application
+
+        :return an instance of `applications_schemas.ApplicationSchema`
+        which provide application data
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                applications_table.update()
+                .where(applications_table.c.id == id)
+                .values(
+                    name=data.name,
+                    description=data.description,
+                    updated_at=datetime.now()
+                )
+                .returning(
+                    applications_table.c.id,
+                    applications_table.c.name,
+                    applications_table.c.description,
+                    applications_table.c.created_at,
+                    applications_table.c.updated_at,
+                    applications_table.c.deleted_at,
+                    applications_table.c.is_deleted
+                )
+            )
+
+            return await self.database.fetch_one(query)
+
+    async def delete(self, id: int) -> None:
+        """Deletes an application according passed application identifier
+
+        :param `id` - identifier of application
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                applications_table.update()
+                .where(applications_table.c.id == id)
+                .values(
+                    is_deleted=True,
+                    deleted_at=datetime.now()
+                )
+            )
+            await self.database.execute(query)
+            await self.env_service.delete_envs_for_app(id)
 
     async def get_apps(
         self,
@@ -115,61 +174,3 @@ class ApplicationService():
         )
         
         return await self.database.fetch_val(query)
-
-    async def update_app(
-        self,
-        app_id: int,
-        app: applications_schemas.ApplicationCreateSchema
-    ) -> applications_schemas.ApplicationSchema:
-        """Updates an application according to the passed data
-
-        :param `app_id` - identifier of application
-
-        :param `app` - an instance of `applications_schemas.ApplicationCreateSchema`
-        which provide data to update an application
-
-        :return an instance of `applications_schemas.ApplicationSchema`
-        which provide application data
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                applications_table.update()
-                .where(applications_table.c.id == app_id)
-                .values(
-                    name=app.name,
-                    description=app.description,
-                    updated_at=datetime.now()
-                )
-                .returning(
-                    applications_table.c.id,
-                    applications_table.c.name,
-                    applications_table.c.description,
-                    applications_table.c.created_at,
-                    applications_table.c.updated_at,
-                    applications_table.c.deleted_at,
-                    applications_table.c.is_deleted
-                )
-            )
-
-            return await self.database.fetch_one(query)
-
-    async def delete_app(self, app_id: int) -> None:
-        """Deletes an application according passed application identifier
-
-        :param `app_id` - identifier of application
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                applications_table.update()
-                .where(applications_table.c.id == app_id)
-                .values(
-                    is_deleted=True,
-                    deleted_at=datetime.now()
-                )
-            )
-            await self.database.execute(query)
-            await self.env_service.delete_envs_for_app(app_id)

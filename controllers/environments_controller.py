@@ -5,6 +5,7 @@ from schemas import environments_schemas
 from services.environment_service import EnvironmentService
 from containers import Container
 
+
 router = APIRouter(tags=['environments'])
 
 
@@ -14,7 +15,7 @@ router = APIRouter(tags=['environments'])
     status_code=201
 )
 @inject
-async def create_environment(
+async def create(
     environment: environments_schemas.EnvironmentCreateSchema, 
     env_service: EnvironmentService = Depends(Provide[Container.env_service])
 ) -> Response:
@@ -22,14 +23,14 @@ async def create_environment(
 
     """
 
-    environment = await env_service.create_env(environment)
+    environment = await env_service.create(environment)
     
     return environment
 
 
 @router.put("/environments/{env_id}", response_model=environments_schemas.EnvironmentSchema)
 @inject
-async def update_environment(
+async def update(
     env_id: int, 
     app_data: environments_schemas.EnvironmentCreateSchema,
     env_service: EnvironmentService = Depends(Provide[Container.env_service])
@@ -38,12 +39,12 @@ async def update_environment(
 
     """
 
-    return await env_service.update_env(env_id=env_id, env=app_data)
+    return await env_service.update(env_id=env_id, env=app_data)
 
 
 @router.delete("/environments/{env_id}", status_code=200)
 @inject
-async def delete_environment(
+async def delete(
     env_id: int,
     env_service: EnvironmentService = Depends(Provide[Container.env_service])
 ) -> Response:
@@ -51,14 +52,14 @@ async def delete_environment(
 
     """
 
-    await env_service.delete_env(env_id=env_id)
+    await env_service.delete(env_id=env_id)
     
     return {'deleted': env_id}
 
 
 @router.get("/environments", response_model=environments_schemas.EnvironmentsListSchema)
 @inject
-async def get_environments(
+async def get_list(
     app_id: int,
     page: int = 1,
     per_page: int = 10,

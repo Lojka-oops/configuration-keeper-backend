@@ -6,10 +6,11 @@ from sqlalchemy import desc, func, select, and_
 
 from models.environments import environments_table
 from schemas import environments_schemas
+from .base_service import BaseService
 from .variable_service import VariableService
 
 
-class EnvironmentService():
+class EnvironmentService(BaseService):
     """Service for working with environment entities
 
     """
@@ -32,13 +33,13 @@ class EnvironmentService():
         self.database = database
         self.var_service = var_service
 
-    async def create_env(
+    async def create(
         self,
-        env: environments_schemas.EnvironmentCreateSchema
+        data: environments_schemas.EnvironmentCreateSchema
     ) -> environments_schemas.EnvironmentSchema:
         """Creates a new environment according to the passed data
 
-        :param `env` -  an instance of `environments_schemas.EnvironmentCreateSchema`
+        :param `data` -  an instance of `environments_schemas.EnvironmentCreateSchema`
         which provide data to create an environment
 
         :return an instance of `environments_schemas.EnvironmentSchema`
@@ -49,9 +50,9 @@ class EnvironmentService():
         async with self.database.transaction():
             query = (environments_table.insert()
                 .values(
-                    name=env.name,
-                    description=env.description,
-                    app_id=env.app_id,
+                    name=data.name,
+                    description=data.description,
+                    app_id=data.app_id,
                     created_at=datetime.now()
                 )
                 .returning(
@@ -67,6 +68,65 @@ class EnvironmentService():
             )
 
             return await self.database.fetch_one(query)
+    
+    async def update(
+        self,
+        id: int,
+        data: environments_schemas.EnvironmentCreateSchema
+    ) -> environments_schemas.EnvironmentSchema:
+        """Updates an environment according to the passed data
+
+        :param `id` - identifier of environment
+
+        :param `data` - an instance of `environments_schemas.EnvironmentCreateSchema`
+        which provide data to update an environment
+
+        :return an instance of `environments_schemas.EnvironmentSchema`
+        which provide base environment data
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                environments_table.update()
+                .where(environments_table.c.id == id)
+                .values(
+                    name=data.name,
+                    description=data.description,
+                    updated_at=datetime.now()
+                )
+                .returning(
+                    environments_table.c.id,
+                    environments_table.c.name,
+                    environments_table.c.code,
+                    environments_table.c.description,
+                    environments_table.c.created_at,
+                    environments_table.c.updated_at,
+                    environments_table.c.deleted_at,
+                    environments_table.c.is_deleted
+                )
+            )
+
+            return await self.database.fetch_one(query)
+
+    async def delete(self, id: int) -> None:
+        """Deletes an environment according passed environment identifier
+
+        :param `id` - identifier of environment
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                environments_table.update()
+                .where(environments_table.c.id == id)
+                .values(
+                    is_deleted=True,
+                    deleted_at=datetime.now()
+                )
+            )
+            await self.database.execute(query)
+            await self.var_service.delete_vars_for_env(id)
 
     async def get_envs(
         self,
@@ -167,65 +227,6 @@ class EnvironmentService():
         )
         
         return await self.database.fetch_val(query)
-
-    async def update_env(
-        self,
-        env_id: int,
-        env: environments_schemas.EnvironmentCreateSchema
-    ) -> environments_schemas.EnvironmentSchema:
-        """Updates an environment according to the passed data
-
-        :param `env_id` - identifier of environment
-
-        :param `env` - an instance of `environments_schemas.EnvironmentCreateSchema`
-        which provide data to update an environment
-
-        :return an instance of `environments_schemas.EnvironmentSchema`
-        which provide base environment data
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                environments_table.update()
-                .where(environments_table.c.id == env_id)
-                .values(
-                    name=env.name,
-                    description=env.description,
-                    updated_at=datetime.now()
-                )
-                .returning(
-                    environments_table.c.id,
-                    environments_table.c.name,
-                    environments_table.c.code,
-                    environments_table.c.description,
-                    environments_table.c.created_at,
-                    environments_table.c.updated_at,
-                    environments_table.c.deleted_at,
-                    environments_table.c.is_deleted
-                )
-            )
-
-            return await self.database.fetch_one(query)
-
-    async def delete_env(self, env_id: int) -> None:
-        """Deletes an environment according passed environment identifier
-
-        :param `env_id` - identifier of environment
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                environments_table.update()
-                .where(environments_table.c.id == env_id)
-                .values(
-                    is_deleted=True,
-                    deleted_at=datetime.now()
-                )
-            )
-            await self.database.execute(query)
-            await self.var_service.delete_vars_for_env(env_id)
 
     async def delete_envs_for_app(self, app_id):
         """Deletes all environments by application identifier

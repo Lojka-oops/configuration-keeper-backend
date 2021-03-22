@@ -5,10 +5,11 @@ from databases import Database
 from sqlalchemy import desc, func, select, and_
 
 from models.variables import variables_table
+from .base_service import BaseService
 from schemas import variables_schemas
 
 
-class VariableService():
+class VariableService(BaseService):
     """Service for working with variable entities
 
     """
@@ -23,13 +24,13 @@ class VariableService():
 
         self.database = database
 
-    async def create_var(
+    async def create(
         self, 
-        var: variables_schemas.VariableCreateSchema
+        data: variables_schemas.VariableCreateSchema
     ) -> variables_schemas.VariableSchema:
         """Creates a new variable according to the passed data
 
-        :param `app` -  an instance of `variables_schemas.VariableCreateSchema`
+        :param `data` -  an instance of `variables_schemas.VariableCreateSchema`
         which provide data to create an variable
 
         :return an instance of `variables_schemas.VariableSchema`
@@ -40,9 +41,9 @@ class VariableService():
         async with self.database.transaction():
             query = (variables_table.insert()
                 .values(
-                    name=var.name,
-                    value=var.value,
-                    env_id=var.env_id,
+                    name=data.name,
+                    value=data.value,
+                    env_id=data.env_id,
                     created_at=datetime.now()
                 )
                 .returning(
@@ -57,6 +58,63 @@ class VariableService():
             )
 
             return await self.database.fetch_one(query)
+
+    async def update(
+        self,
+        id: int,
+        data: variables_schemas.VariableCreateSchema
+    ) -> variables_schemas.VariableSchema:
+        """Updates an variable according to the passed data
+
+        :param `id` - identifier of variable
+
+        :param `data` - an instance of `variables_schemas.VariableCreateSchema`
+        which provide data to update an variable
+
+        :return an instance of `variables_schemas.VariableSchema`
+        which provide base variable data
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                variables_table.update()
+                .where(variables_table.c.id == id)
+                .values(
+                    name=data.name,
+                    value=data.value,
+                    updated_at=datetime.now()
+                )
+                .returning(
+                    variables_table.c.id,
+                    variables_table.c.name,
+                    variables_table.c.value,
+                    variables_table.c.created_at,
+                    variables_table.c.updated_at,
+                    variables_table.c.deleted_at,
+                    variables_table.c.is_deleted
+                )
+            )
+            
+            return await self.database.fetch_one(query)
+
+    async def delete(self, id: int):
+        """Deletes an variable according passed variable identifier
+
+        :param `id` - identifier of variable
+
+        """
+
+        async with self.database.transaction():
+            query = (
+                variables_table.update()
+                .where(variables_table.c.id == id)
+                .values(
+                    is_deleted=True,
+                    deleted_at=datetime.now()
+                )
+            )
+            await self.database.execute(query)
 
     async def get_vars(
         self,
@@ -126,63 +184,6 @@ class VariableService():
         )
         
         return await self.database.fetch_val(query)
-
-    async def update_var(
-        self,
-        var_id: int,
-        var: variables_schemas.VariableCreateSchema
-    ) -> variables_schemas.VariableSchema:
-        """Updates an variable according to the passed data
-
-        :param `var_id` - identifier of variable
-
-        :param `var` - an instance of `variables_schemas.VariableCreateSchema`
-        which provide data to update an variable
-
-        :return an instance of `variables_schemas.VariableSchema`
-        which provide base variable data
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                variables_table.update()
-                .where(variables_table.c.id == var_id)
-                .values(
-                    name=var.name,
-                    value=var.value,
-                    updated_at=datetime.now()
-                )
-                .returning(
-                    variables_table.c.id,
-                    variables_table.c.name,
-                    variables_table.c.value,
-                    variables_table.c.created_at,
-                    variables_table.c.updated_at,
-                    variables_table.c.deleted_at,
-                    variables_table.c.is_deleted
-                )
-            )
-            
-            return await self.database.fetch_one(query)
-
-    async def delete_var(self, var_id: int):
-        """Deletes an variable according passed variable identifier
-
-        :param `var_id` - identifier of variable
-
-        """
-
-        async with self.database.transaction():
-            query = (
-                variables_table.update()
-                .where(variables_table.c.id == var_id)
-                .values(
-                    is_deleted=True,
-                    deleted_at=datetime.now()
-                )
-            )
-            await self.database.execute(query)
 
     async def delete_vars_for_env(self, env_id):
         """Deletes all variables by environmetn identifier

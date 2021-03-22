@@ -5,12 +5,13 @@ from schemas import variables_schemas
 from services.variable_service import VariableService
 from containers import Container
 
+
 router = APIRouter(tags=['variables'])
 
 
 @router.post("/variables", response_model=variables_schemas.VariableSchema, status_code=201)
 @inject
-async def create_variable(
+async def create(
     variable: variables_schemas.VariableCreateSchema, 
     var_service: VariableService = Depends(Provide[Container.var_service])
 ) -> Response:
@@ -18,14 +19,14 @@ async def create_variable(
 
     """
 
-    variable = await var_service.create_var(variable)
+    variable = await var_service.create(variable)
     
     return variable
 
 
 @router.put("/variables/{var_id}", response_model=variables_schemas.VariableSchema)
 @inject
-async def update_variable(
+async def update(
     var_id: int, 
     variable_data: variables_schemas.VariableCreateSchema,
     var_service: VariableService = Depends(Provide[Container.var_service])
@@ -34,12 +35,12 @@ async def update_variable(
 
     """
 
-    return await var_service.update_var(var_id=var_id, var=variable_data)
+    return await var_service.update(var_id=var_id, var=variable_data)
 
 
 @router.delete("/variables/{var_id}", status_code=200)
 @inject
-async def delete_variable(
+async def delete(
     var_id: int,
     var_service: VariableService = Depends(Provide[Container.var_service])
 ) -> Response:
@@ -47,14 +48,14 @@ async def delete_variable(
 
     """
 
-    await var_service.delete_var(var_id=var_id)
+    await var_service.delete(var_id=var_id)
     
     return {'deleted': var_id}
 
 
 @router.get("/variables", response_model=variables_schemas.VariablesListSchema)
 @inject
-async def get_variables(
+async def get_list(
     env_id: int,
     page: int = 1,
     per_page: int = 10,
