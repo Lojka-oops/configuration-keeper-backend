@@ -37,7 +37,7 @@ class ApplicationService(BaseService):
     ) -> Record:
         """Creates a new application according to the passed data
 
-        :param `data` -  an instance of `ApplicationCreateSchema`
+        :param `data` - an instance of `ApplicationCreateSchema`
         which provide data to create an application
 
         :return an instance of `databases.backends.postgres.Record`
@@ -123,6 +123,34 @@ class ApplicationService(BaseService):
             )
             await self.database.execute(query)
             await self.env_service.delete_by_app_id(id)
+
+    async def get_one(self, id: int) -> Record:
+        """Selects application by its id from the database
+
+        :param `id` - application identifier
+
+        :return an instance of `databases.backends.postgres.Record`
+        which provide application data
+
+        """
+
+        query = (
+            select(
+                [
+                    applications_table.c.id,
+                    applications_table.c.name,
+                    applications_table.c.description,
+                    applications_table.c.created_at,
+                    applications_table.c.updated_at,
+                    applications_table.c.deleted_at,
+                    applications_table.c.is_deleted
+                ]
+            )
+            .select_from(applications_table)
+            .where(applications_table.c.id == id)
+        )
+
+        return await self.database.fetch_one(query)
 
     async def get_list(
         self,

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Response
 
 from schemas import environment_schemas
 from services.environment_service import EnvironmentService
+from services.change_history_service import ChangeHistoryService
 from containers import Container
 
 
@@ -32,14 +33,18 @@ async def create(
 @inject
 async def update(
     env_id: int, 
-    app_data: environment_schemas.EnvironmentCreateSchema,
-    env_service: EnvironmentService = Depends(Provide[Container.env_service])
+    env_data: environment_schemas.EnvironmentCreateSchema,
+    env_service: EnvironmentService = Depends(Provide[Container.env_service]),
+    change_hostory_service: ChangeHistoryService = Depends(Provide[Container.change_history_service])
 ) -> Response:
     """Updates an environment by id
 
     """
 
-    return await env_service.update(env_id=env_id, env=app_data)
+    old_env_data = await env_service.get_one(env_id)
+    await change_hostory_service.make_history(env_id, 'Environment', env_data, old_env_data)
+
+    return await env_service.update(id=env_id, data=env_data)
 
 
 @router.delete("/environments/{env_id}", status_code=200)

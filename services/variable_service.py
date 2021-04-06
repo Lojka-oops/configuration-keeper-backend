@@ -35,7 +35,7 @@ class VariableService(BaseService):
         which provide data to create an variable
 
         :return an instance of `databases.backends.postgres.Record`
-        which provide base variable data
+        which provide variable data
 
         """
 
@@ -73,7 +73,7 @@ class VariableService(BaseService):
         which provide data to update an variable
 
         :return an instance of `databases.backends.postgres.Record`
-        which provide base variable data
+        which provide variable data
 
         """
 
@@ -117,6 +117,34 @@ class VariableService(BaseService):
             )
             await self.database.execute(query)
 
+    async def get_one(self, id: int) -> Record:
+        """Selects variable by its id from the database
+
+        :param `id` - variable identifier
+
+        :return an instance of `databases.backends.postgres.Record`
+        which provide variable data
+
+        """
+
+        query = (
+            select(
+                [
+                    variables_table.c.id,
+                    variables_table.c.name,
+                    variables_table.c.value,
+                    variables_table.c.created_at,
+                    variables_table.c.updated_at,
+                    variables_table.c.deleted_at,
+                    variables_table.c.is_deleted
+                ]
+            )
+            .select_from(variables_table)
+            .where(variables_table.c.id == id)
+        )
+
+        return await self.database.fetch_one(query)
+
     async def get_list(
         self,
         env_id: int,
@@ -132,7 +160,7 @@ class VariableService(BaseService):
         :param `per_page` - number of entities on one page
 
         :return list of `databases.backends.postgres.Record`
-        which provide base variable data
+        which provide variable data
 
         """
 

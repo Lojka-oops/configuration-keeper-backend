@@ -44,7 +44,7 @@ class EnvironmentService(BaseService):
         which provide data to create an environment
 
         :return an instance of `databases.backends.postgres.Record`
-        which provide base environment data
+        which provide environment data
 
         """
 
@@ -84,7 +84,7 @@ class EnvironmentService(BaseService):
         which provide data to update an environment
 
         :return an instance of `databases.backends.postgres.Record`
-        which provide base environment data
+        which provide environment data
 
         """
 
@@ -130,6 +130,35 @@ class EnvironmentService(BaseService):
             await self.database.execute(query)
             await self.var_service.delete_by_env_id(id)
 
+    async def get_one(self, id: int) -> Record:
+        """Selects environment by its id from the database
+
+        :param `id` - environment identifier
+
+        :return an instance of `databases.backends.postgres.Record`
+        which provide environment data
+
+        """
+
+        query = (
+            select(
+                [
+                    environments_table.c.id,
+                    environments_table.c.name,
+                    environments_table.c.code,
+                    environments_table.c.description,
+                    environments_table.c.created_at,
+                    environments_table.c.updated_at,
+                    environments_table.c.deleted_at,
+                    environments_table.c.is_deleted
+                ]
+            )
+            .select_from(environments_table)
+            .where(environments_table.c.id == id)
+        )
+
+        return await self.database.fetch_one(query)
+
     async def get_list(
         self,
         page: int,
@@ -145,7 +174,7 @@ class EnvironmentService(BaseService):
         :optional param `app_id` - application identifier
 
         :return list of `databases.backends.postgres.Record`
-        which provide base environment data
+        which provide environment data
 
         """
 
@@ -187,7 +216,7 @@ class EnvironmentService(BaseService):
         :param `code` - unique code of environment
 
         :return an instance of `databases.backends.postgres.Record`
-        which provide base environment data
+        which provide environment data
 
         """
 

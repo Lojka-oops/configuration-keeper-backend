@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Response
 
 from schemas import application_schemas
 from services.application_service import ApplicationService
+from services.change_history_service import ChangeHistoryService
 from containers import Container
 
 
@@ -29,13 +30,17 @@ async def create(
 async def update(
     app_id: int, 
     app_data: application_schemas.ApplicationCreateSchema,
-    app_service: ApplicationService = Depends(Provide[Container.app_service])
+    app_service: ApplicationService = Depends(Provide[Container.app_service]),
+    change_hostory_service: ChangeHistoryService = Depends(Provide[Container.change_history_service])
 ) -> Response:
     """Updates an application by id
 
     """
     
-    return await app_service.update(app_id=app_id, app=app_data)
+    old_app_data = await app_service.get_one(app_id)
+    await change_hostory_service.make_history(app_id, 'Application', app_data, old_app_data)
+
+    return await app_service.update(app_id, app_data)
 
 
 @router.delete("/applications/{app_id}", status_code=200)

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Response
 
 from schemas import variable_schemas
 from services.variable_service import VariableService
+from services.change_history_service import ChangeHistoryService
 from containers import Container
 
 
@@ -28,14 +29,18 @@ async def create(
 @inject
 async def update(
     var_id: int, 
-    variable_data: variable_schemas.VariableCreateSchema,
-    var_service: VariableService = Depends(Provide[Container.var_service])
+    var_data: variable_schemas.VariableCreateSchema,
+    var_service: VariableService = Depends(Provide[Container.var_service]),
+    change_hostory_service: ChangeHistoryService = Depends(Provide[Container.change_history_service])
 ) -> Response:
     """Updates an variable by id
 
     """
 
-    return await var_service.update(var_id=var_id, var=variable_data)
+    old_var_data = await var_service.get_one(var_id)
+    await change_hostory_service.make_history(var_id, 'Variable', var_data, old_var_data)
+
+    return await var_service.update(id=var_id, data=var_data)
 
 
 @router.delete("/variables/{var_id}", status_code=200)

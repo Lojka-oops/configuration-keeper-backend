@@ -4,6 +4,7 @@ from dependency_injector import containers, providers
 from services.application_service import ApplicationService
 from services.environment_service import EnvironmentService
 from services.variable_service import VariableService
+from services.change_history_service import ChangeHistoryService
 
 
 class Container(containers.DeclarativeContainer):
@@ -17,7 +18,7 @@ class Container(containers.DeclarativeContainer):
 
     var_service = providers.Factory(
         VariableService,
-        database=database,
+        database=database
     )
 
     env_service = providers.Factory(
@@ -30,4 +31,9 @@ class Container(containers.DeclarativeContainer):
         ApplicationService,
         database=database,
         env_service=env_service
+    )
+
+    change_history_service = providers.Factory(
+        ChangeHistoryService,
+        database=database
     )

@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from typing import List
 
-from schemas.base_schema import BaseSchema
+from schemas.base_schemas import BaseSchema
 
 
 class BaseService(ABC):
