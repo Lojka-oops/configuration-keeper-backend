@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
-from .base_schema import BaseSchema
+from .base_schemas import BaseSchema
 
 
 class VariableSchema(BaseSchema):

@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List
 
 from databases import Database
+from databases.backends.postgres import Record
 from sqlalchemy import desc, func, select
 
 from models.applications import applications_table
-from schemas import application_schemas
+from schemas.application_schemas import ApplicationCreateSchema
 from .base_service import BaseService
 from .environment_service import EnvironmentService
 
@@ -32,20 +33,21 @@ class ApplicationService(BaseService):
 
     async def create(
         self, 
-        data: application_schemas.ApplicationCreateSchema
-    ) -> application_schemas.ApplicationSchema:
+        data: ApplicationCreateSchema
+    ) -> Record:
         """Creates a new application according to the passed data
 
-        :param `data` -  an instance of `application_schemas.ApplicationCreateSchema`
+        :param `data` -  an instance of `ApplicationCreateSchema`
         which provide data to create an application
 
-        :return an instance of `application_schemas.ApplicationSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide application data
 
         """
 
         async with self.database.transaction():
-            query = (applications_table.insert()
+            query = (
+                applications_table.insert()
                 .values(
                     name=data.name,
                     description=data.description,
@@ -67,16 +69,16 @@ class ApplicationService(BaseService):
     async def update(
         self,
         id: int,
-        data: application_schemas.ApplicationCreateSchema
-    ) -> application_schemas.ApplicationSchema:
+        data: ApplicationCreateSchema
+    ) -> Record:
         """Updates an application according to the passed data
 
         :param `id` - identifier of application
 
-        :param `data` - an instance of `application_schemas.ApplicationCreateSchema`
+        :param `data` - an instance of `ApplicationCreateSchema`
         which provide data to update an application
 
-        :return an instance of `application_schemas.ApplicationSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide application data
 
         """
@@ -126,14 +128,14 @@ class ApplicationService(BaseService):
         self,
         page: int,
         per_page: int
-    ) -> List[application_schemas.ApplicationSchema]:
+    ) -> List[Record]:
         """Selects all applications from the database
 
         :param `page` - page number
 
         :param `per_page` - number of entities on one page
 
-        :return list of `application_schemas.ApplicationSchema`
+        :return list of `databases.backends.postgres.Record`
         which provide application data
 
         """

@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List
 
 from databases import Database
+from databases.backends.postgres import Record
 from sqlalchemy import desc, func, select, and_
 
 from models.environments import environments_table
-from schemas import environment_schemas
+from schemas.environment_schemas import EnvironmentCreateSchema
 from .base_service import BaseService
 from .variable_service import VariableService
 
@@ -35,20 +36,21 @@ class EnvironmentService(BaseService):
 
     async def create(
         self,
-        data: environment_schemas.EnvironmentCreateSchema
-    ) -> environment_schemas.EnvironmentSchema:
+        data: EnvironmentCreateSchema
+    ) -> Record:
         """Creates a new environment according to the passed data
 
-        :param `data` -  an instance of `environment_schemas.EnvironmentCreateSchema`
+        :param `data` -  an instance of `EnvironmentCreateSchema`
         which provide data to create an environment
 
-        :return an instance of `environment_schemas.EnvironmentSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide base environment data
 
         """
 
         async with self.database.transaction():
-            query = (environments_table.insert()
+            query = (
+                environments_table.insert()
                 .values(
                     name=data.name,
                     description=data.description,
@@ -72,16 +74,16 @@ class EnvironmentService(BaseService):
     async def update(
         self,
         id: int,
-        data: environment_schemas.EnvironmentCreateSchema
-    ) -> environment_schemas.EnvironmentSchema:
+        data: EnvironmentCreateSchema
+    ) -> Record:
         """Updates an environment according to the passed data
 
         :param `id` - identifier of environment
 
-        :param `data` - an instance of `environment_schemas.EnvironmentCreateSchema`
+        :param `data` - an instance of `EnvironmentCreateSchema`
         which provide data to update an environment
 
-        :return an instance of `environment_schemas.EnvironmentSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide base environment data
 
         """
@@ -133,7 +135,7 @@ class EnvironmentService(BaseService):
         page: int,
         per_page: int,
         app_id: int = None
-    ) -> List[environment_schemas.EnvironmentSchema]:
+    ) -> List[Record]:
         """Selects all environments for application from the database
 
         :param `page` - page number
@@ -142,7 +144,7 @@ class EnvironmentService(BaseService):
 
         :optional param `app_id` - application identifier
 
-        :return list of `environment_schemas.EnvironmentSchema`
+        :return list of `databases.backends.postgres.Record`
         which provide base environment data
 
         """
@@ -178,13 +180,14 @@ class EnvironmentService(BaseService):
     async def get_one_by_code(
         self, 
         code: str
-    ) -> dict:
+    ) -> Record:
         """Selects an environment from the database 
         that matches the passed code
 
         :param `code` - unique code of environment
 
-        :return dictionary with two fields `id` and `name`
+        :return an instance of `databases.backends.postgres.Record`
+        which provide base environment data
 
         """
 
@@ -247,7 +250,7 @@ class EnvironmentService(BaseService):
                     environments_table.c.id,
                 )
             )
-            updated_envs = await self.database.fetch_all(query)
+            deleted_envs = await self.database.fetch_all(query)
 
-        for env in updated_envs:
+        for env in deleted_envs:
             await self.var_service.delete_by_env_id(env['id'])

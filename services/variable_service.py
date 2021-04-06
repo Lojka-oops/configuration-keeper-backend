@@ -2,11 +2,12 @@ from datetime import datetime
 from typing import List
 
 from databases import Database
+from databases.backends.postgres import Record
 from sqlalchemy import desc, func, select, and_
 
 from models.variables import variables_table
 from .base_service import BaseService
-from schemas import variable_schemas
+from schemas.variable_schemas import VariableCreateSchema
 
 
 class VariableService(BaseService):
@@ -26,14 +27,14 @@ class VariableService(BaseService):
 
     async def create(
         self, 
-        data: variable_schemas.VariableCreateSchema
-    ) -> variable_schemas.VariableSchema:
+        data: VariableCreateSchema
+    ) -> Record:
         """Creates a new variable according to the passed data
 
-        :param `data` -  an instance of `variable_schemas.VariableCreateSchema`
+        :param `data` -  an instance of `VariableCreateSchema`
         which provide data to create an variable
 
-        :return an instance of `variable_schemas.VariableSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide base variable data
 
         """
@@ -62,16 +63,16 @@ class VariableService(BaseService):
     async def update(
         self,
         id: int,
-        data: variable_schemas.VariableCreateSchema
-    ) -> variable_schemas.VariableSchema:
+        data: VariableCreateSchema
+    ) -> Record:
         """Updates an variable according to the passed data
 
         :param `id` - identifier of variable
 
-        :param `data` - an instance of `variable_schemas.VariableCreateSchema`
+        :param `data` - an instance of `VariableCreateSchema`
         which provide data to update an variable
 
-        :return an instance of `variable_schemas.VariableSchema`
+        :return an instance of `databases.backends.postgres.Record`
         which provide base variable data
 
         """
@@ -121,7 +122,7 @@ class VariableService(BaseService):
         env_id: int,
         page: int = None,
         per_page: int = None
-    ) -> List[variable_schemas.VariableSchema]:
+    ) -> List[Record]:
         """Selects all variables for environment from the database
 
         :param `env_id` - environment identifier
@@ -130,7 +131,7 @@ class VariableService(BaseService):
 
         :param `per_page` - number of entities on one page
 
-        :return list of `variable_schemas.VariableSchema`
+        :return list of `databases.backends.postgres.Record`
         which provide base variable data
 
         """

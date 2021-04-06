@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from pydantic import UUID4, BaseModel, validator, Field
 
-from .base_schema import BaseSchema
+from .base_schemas import BaseSchema
 
 
 class EnvironmentSchema(BaseSchema):
