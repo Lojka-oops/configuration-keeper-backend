@@ -5,7 +5,7 @@ from databases import Database
 from sqlalchemy import desc, func, select, and_
 
 from models.environments import environments_table
-from schemas import environments_schemas
+from schemas import environment_schemas
 from .base_service import BaseService
 from .variable_service import VariableService
 
@@ -35,14 +35,14 @@ class EnvironmentService(BaseService):
 
     async def create(
         self,
-        data: environments_schemas.EnvironmentCreateSchema
-    ) -> environments_schemas.EnvironmentSchema:
+        data: environment_schemas.EnvironmentCreateSchema
+    ) -> environment_schemas.EnvironmentSchema:
         """Creates a new environment according to the passed data
 
-        :param `data` -  an instance of `environments_schemas.EnvironmentCreateSchema`
+        :param `data` -  an instance of `environment_schemas.EnvironmentCreateSchema`
         which provide data to create an environment
 
-        :return an instance of `environments_schemas.EnvironmentSchema`
+        :return an instance of `environment_schemas.EnvironmentSchema`
         which provide base environment data
 
         """
@@ -72,16 +72,16 @@ class EnvironmentService(BaseService):
     async def update(
         self,
         id: int,
-        data: environments_schemas.EnvironmentCreateSchema
-    ) -> environments_schemas.EnvironmentSchema:
+        data: environment_schemas.EnvironmentCreateSchema
+    ) -> environment_schemas.EnvironmentSchema:
         """Updates an environment according to the passed data
 
         :param `id` - identifier of environment
 
-        :param `data` - an instance of `environments_schemas.EnvironmentCreateSchema`
+        :param `data` - an instance of `environment_schemas.EnvironmentCreateSchema`
         which provide data to update an environment
 
-        :return an instance of `environments_schemas.EnvironmentSchema`
+        :return an instance of `environment_schemas.EnvironmentSchema`
         which provide base environment data
 
         """
@@ -126,23 +126,23 @@ class EnvironmentService(BaseService):
                 )
             )
             await self.database.execute(query)
-            await self.var_service.delete_vars_for_env(id)
+            await self.var_service.delete_by_env_id(id)
 
-    async def get_envs(
+    async def get_list(
         self,
-        app_id: int,
         page: int,
-        per_page: int
-    ) -> List[environments_schemas.EnvironmentSchema]:
+        per_page: int,
+        app_id: int = None
+    ) -> List[environment_schemas.EnvironmentSchema]:
         """Selects all environments for application from the database
-
-        :param `app_id` - application identifier
 
         :param `page` - page number
 
         :param `per_page` - number of entities on one page
 
-        :return list of `environments_schemas.EnvironmentSchema`
+        :optional param `app_id` - application identifier
+
+        :return list of `environment_schemas.EnvironmentSchema`
         which provide base environment data
 
         """
@@ -175,7 +175,7 @@ class EnvironmentService(BaseService):
 
         return await self.database.fetch_all(query)
 
-    async def get_env_by_code(
+    async def get_one_by_code(
         self, 
         code: str
     ) -> dict:
@@ -206,7 +206,7 @@ class EnvironmentService(BaseService):
         
         return await self.database.fetch_one(query)
 
-    async def get_envs_count(self, app_id: int) -> int:
+    async def get_count(self, app_id: int) -> int:
         """Count environments in the database
 
         :param `app_id` - application identifier
@@ -228,7 +228,7 @@ class EnvironmentService(BaseService):
         
         return await self.database.fetch_val(query)
 
-    async def delete_envs_for_app(self, app_id):
+    async def delete_by_app_id(self, app_id):
         """Deletes all environments by application identifier
 
         :param `app_id` - identifier of application
@@ -250,4 +250,4 @@ class EnvironmentService(BaseService):
             updated_envs = await self.database.fetch_all(query)
 
         for env in updated_envs:
-            await self.var_service.delete_vars_for_env(env['id'])
+            await self.var_service.delete_by_env_id(env['id'])

@@ -6,7 +6,7 @@ from sqlalchemy import desc, func, select, and_
 
 from models.variables import variables_table
 from .base_service import BaseService
-from schemas import variables_schemas
+from schemas import variable_schemas
 
 
 class VariableService(BaseService):
@@ -26,14 +26,14 @@ class VariableService(BaseService):
 
     async def create(
         self, 
-        data: variables_schemas.VariableCreateSchema
-    ) -> variables_schemas.VariableSchema:
+        data: variable_schemas.VariableCreateSchema
+    ) -> variable_schemas.VariableSchema:
         """Creates a new variable according to the passed data
 
-        :param `data` -  an instance of `variables_schemas.VariableCreateSchema`
+        :param `data` -  an instance of `variable_schemas.VariableCreateSchema`
         which provide data to create an variable
 
-        :return an instance of `variables_schemas.VariableSchema`
+        :return an instance of `variable_schemas.VariableSchema`
         which provide base variable data
 
         """
@@ -62,16 +62,16 @@ class VariableService(BaseService):
     async def update(
         self,
         id: int,
-        data: variables_schemas.VariableCreateSchema
-    ) -> variables_schemas.VariableSchema:
+        data: variable_schemas.VariableCreateSchema
+    ) -> variable_schemas.VariableSchema:
         """Updates an variable according to the passed data
 
         :param `id` - identifier of variable
 
-        :param `data` - an instance of `variables_schemas.VariableCreateSchema`
+        :param `data` - an instance of `variable_schemas.VariableCreateSchema`
         which provide data to update an variable
 
-        :return an instance of `variables_schemas.VariableSchema`
+        :return an instance of `variable_schemas.VariableSchema`
         which provide base variable data
 
         """
@@ -116,12 +116,12 @@ class VariableService(BaseService):
             )
             await self.database.execute(query)
 
-    async def get_vars(
+    async def get_list(
         self,
         env_id: int,
         page: int = None,
         per_page: int = None
-    ) -> List[variables_schemas.VariableSchema]:
+    ) -> List[variable_schemas.VariableSchema]:
         """Selects all variables for environment from the database
 
         :param `env_id` - environment identifier
@@ -130,7 +130,7 @@ class VariableService(BaseService):
 
         :param `per_page` - number of entities on one page
 
-        :return list of `variables_schemas.VariableSchema`
+        :return list of `variable_schemas.VariableSchema`
         which provide base variable data
 
         """
@@ -163,7 +163,7 @@ class VariableService(BaseService):
 
         return await self.database.fetch_all(query)
 
-    async def get_vars_count(self, env_id: int) -> int:
+    async def get_count(self, env_id: int) -> int:
         """Count variables in the database
 
         :param `env_id` - environment identifier
@@ -185,7 +185,7 @@ class VariableService(BaseService):
         
         return await self.database.fetch_val(query)
 
-    async def delete_vars_for_env(self, env_id):
+    async def delete_by_env_id(self, env_id):
         """Deletes all variables by environmetn identifier
 
         :param `env_id` - identifier of environment

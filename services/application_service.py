@@ -5,7 +5,7 @@ from databases import Database
 from sqlalchemy import desc, func, select
 
 from models.applications import applications_table
-from schemas import applications_schemas
+from schemas import application_schemas
 from .base_service import BaseService
 from .environment_service import EnvironmentService
 
@@ -32,14 +32,14 @@ class ApplicationService(BaseService):
 
     async def create(
         self, 
-        data: applications_schemas.ApplicationCreateSchema
-    ) -> applications_schemas.ApplicationSchema:
+        data: application_schemas.ApplicationCreateSchema
+    ) -> application_schemas.ApplicationSchema:
         """Creates a new application according to the passed data
 
-        :param `data` -  an instance of `applications_schemas.ApplicationCreateSchema`
+        :param `data` -  an instance of `application_schemas.ApplicationCreateSchema`
         which provide data to create an application
 
-        :return an instance of `applications_schemas.ApplicationSchema`
+        :return an instance of `application_schemas.ApplicationSchema`
         which provide application data
 
         """
@@ -67,16 +67,16 @@ class ApplicationService(BaseService):
     async def update(
         self,
         id: int,
-        data: applications_schemas.ApplicationCreateSchema
-    ) -> applications_schemas.ApplicationSchema:
+        data: application_schemas.ApplicationCreateSchema
+    ) -> application_schemas.ApplicationSchema:
         """Updates an application according to the passed data
 
         :param `id` - identifier of application
 
-        :param `data` - an instance of `applications_schemas.ApplicationCreateSchema`
+        :param `data` - an instance of `application_schemas.ApplicationCreateSchema`
         which provide data to update an application
 
-        :return an instance of `applications_schemas.ApplicationSchema`
+        :return an instance of `application_schemas.ApplicationSchema`
         which provide application data
 
         """
@@ -120,20 +120,20 @@ class ApplicationService(BaseService):
                 )
             )
             await self.database.execute(query)
-            await self.env_service.delete_envs_for_app(id)
+            await self.env_service.delete_by_app_id(id)
 
-    async def get_apps(
+    async def get_list(
         self,
         page: int,
         per_page: int
-    ) -> List[applications_schemas.ApplicationSchema]:
+    ) -> List[application_schemas.ApplicationSchema]:
         """Selects all applications from the database
 
         :param `page` - page number
 
         :param `per_page` - number of entities on one page
 
-        :return list of `applications_schemas.ApplicationSchema`
+        :return list of `application_schemas.ApplicationSchema`
         which provide application data
 
         """
@@ -160,7 +160,7 @@ class ApplicationService(BaseService):
 
         return await self.database.fetch_all(query)
 
-    async def get_apps_count(self) -> int:
+    async def get_count(self) -> int:
         """Count applications in the database
 
         :return count of not deleted applications

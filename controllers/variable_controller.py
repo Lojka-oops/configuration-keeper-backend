@@ -1,7 +1,7 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, Response
 
-from schemas import variables_schemas
+from schemas import variable_schemas
 from services.variable_service import VariableService
 from containers import Container
 
@@ -9,10 +9,10 @@ from containers import Container
 router = APIRouter(tags=['variables'])
 
 
-@router.post("/variables", response_model=variables_schemas.VariableSchema, status_code=201)
+@router.post("/variables", response_model=variable_schemas.VariableSchema, status_code=201)
 @inject
 async def create(
-    variable: variables_schemas.VariableCreateSchema, 
+    variable: variable_schemas.VariableCreateSchema, 
     var_service: VariableService = Depends(Provide[Container.var_service])
 ) -> Response:
     """Creates an variable
@@ -24,11 +24,11 @@ async def create(
     return variable
 
 
-@router.put("/variables/{var_id}", response_model=variables_schemas.VariableSchema)
+@router.put("/variables/{var_id}", response_model=variable_schemas.VariableSchema)
 @inject
 async def update(
     var_id: int, 
-    variable_data: variables_schemas.VariableCreateSchema,
+    variable_data: variable_schemas.VariableCreateSchema,
     var_service: VariableService = Depends(Provide[Container.var_service])
 ) -> Response:
     """Updates an variable by id
@@ -53,7 +53,7 @@ async def delete(
     return {'deleted': var_id}
 
 
-@router.get("/variables", response_model=variables_schemas.VariablesListSchema)
+@router.get("/variables", response_model=variable_schemas.VariablesListSchema)
 @inject
 async def get_list(
     env_id: int,
@@ -65,7 +65,7 @@ async def get_list(
 
     """
 
-    total_cout = await var_service.get_vars_count(env_id)
-    variables = await var_service.get_vars(env_id, page, per_page)
+    total_cout = await var_service.get_count(env_id)
+    variables = await var_service.get_list(env_id, page, per_page)
     
     return {"total_count": total_cout, "data": variables}

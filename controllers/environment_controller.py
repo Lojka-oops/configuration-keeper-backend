@@ -1,7 +1,7 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, Response
 
-from schemas import environments_schemas
+from schemas import environment_schemas
 from services.environment_service import EnvironmentService
 from containers import Container
 
@@ -11,12 +11,12 @@ router = APIRouter(tags=['environments'])
 
 @router.post(
     "/environments", 
-    response_model=environments_schemas.EnvironmentSchema, 
+    response_model=environment_schemas.EnvironmentSchema, 
     status_code=201
 )
 @inject
 async def create(
-    environment: environments_schemas.EnvironmentCreateSchema, 
+    environment: environment_schemas.EnvironmentCreateSchema, 
     env_service: EnvironmentService = Depends(Provide[Container.env_service])
 ) -> Response:
     """Creates an environment
@@ -28,11 +28,11 @@ async def create(
     return environment
 
 
-@router.put("/environments/{env_id}", response_model=environments_schemas.EnvironmentSchema)
+@router.put("/environments/{env_id}", response_model=environment_schemas.EnvironmentSchema)
 @inject
 async def update(
     env_id: int, 
-    app_data: environments_schemas.EnvironmentCreateSchema,
+    app_data: environment_schemas.EnvironmentCreateSchema,
     env_service: EnvironmentService = Depends(Provide[Container.env_service])
 ) -> Response:
     """Updates an environment by id
@@ -57,7 +57,7 @@ async def delete(
     return {'deleted': env_id}
 
 
-@router.get("/environments", response_model=environments_schemas.EnvironmentsListSchema)
+@router.get("/environments", response_model=environment_schemas.EnvironmentsListSchema)
 @inject
 async def get_list(
     app_id: int,
@@ -69,7 +69,7 @@ async def get_list(
 
     """
 
-    total_cout = await env_service.get_envs_count(app_id)
-    envs = await env_service.get_envs(app_id, page, per_page)
+    total_cout = await env_service.get_count(app_id)
+    envs = await env_service.get_list(app_id, page, per_page)
     
     return {"total_count": total_cout, "data": envs}

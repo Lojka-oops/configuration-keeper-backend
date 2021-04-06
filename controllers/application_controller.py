@@ -1,7 +1,7 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, Response
 
-from schemas import applications_schemas
+from schemas import application_schemas
 from services.application_service import ApplicationService
 from containers import Container
 
@@ -9,10 +9,10 @@ from containers import Container
 router = APIRouter(tags=['applications'])
 
 
-@router.post("/applications", response_model=applications_schemas.ApplicationSchema, status_code=201)
+@router.post("/applications", response_model=application_schemas.ApplicationSchema, status_code=201)
 @inject
 async def create(
-    app: applications_schemas.ApplicationCreateSchema, 
+    app: application_schemas.ApplicationCreateSchema, 
     app_service: ApplicationService = Depends(Provide[Container.app_service])
 ) -> Response:
     """Creates an application
@@ -24,11 +24,11 @@ async def create(
     return app
 
 
-@router.put("/applications/{app_id}", response_model=applications_schemas.ApplicationSchema)
+@router.put("/applications/{app_id}", response_model=application_schemas.ApplicationSchema)
 @inject
 async def update(
     app_id: int, 
-    app_data: applications_schemas.ApplicationCreateSchema,
+    app_data: application_schemas.ApplicationCreateSchema,
     app_service: ApplicationService = Depends(Provide[Container.app_service])
 ) -> Response:
     """Updates an application by id
@@ -53,7 +53,7 @@ async def delete(
     return {'deleted': app_id}
 
 
-@router.get("/applications", response_model=applications_schemas.ApplicationsListSchema)
+@router.get("/applications", response_model=application_schemas.ApplicationsListSchema)
 @inject
 async def get_list(
     page: int = 1,
@@ -64,7 +64,7 @@ async def get_list(
 
     """
 
-    total_cout = await app_service.get_apps_count()
-    applications = await app_service.get_apps(page, per_page)
+    total_cout = await app_service.get_count()
+    applications = await app_service.get_list(page, per_page)
     
     return {"total_count": total_cout, "data": applications}
