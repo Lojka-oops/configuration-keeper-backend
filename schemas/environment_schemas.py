@@ -25,12 +25,21 @@ class EnvironmentSchema(BaseSchema):
 
 
 class EnvironmentCreateSchema(BaseModel):
-    """Validates a request to create/update an environment
+    """Validates a request to create an environment
 
     """
 
     name: str = Field(..., description="Environment name")
     app_id: int = Field(..., description="Identifier of application that owns this environment")
+    description: Optional[str] = Field(None, description="Environment description")
+
+
+class EnvironmentUpdateSchema(BaseModel):
+    """Validates a request to update an environment
+
+    """
+
+    name: str = Field(..., description="Environment name")
     description: Optional[str] = Field(None, description="Environment description")
 
 

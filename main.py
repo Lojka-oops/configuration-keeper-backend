@@ -3,12 +3,17 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.exception_handlers import (
     http_exception_handler,
-    request_validation_exception_handler,
+    request_validation_exception_handler
 )
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from controllers import application_controller, environment_controller, \
-    variable_controller, configuration_controller
+from controllers import (
+    application_controller, 
+    environment_controller,
+    variable_controller, 
+    configuration_controller,
+    change_history_controller
+)
 from helpers import dependencies
 from containers import Container
 
@@ -41,6 +46,7 @@ def create_app() -> FastAPI:
             environment_controller, 
             variable_controller, 
             configuration_controller,
+            change_history_controller,
             dependencies
         ]
     )
@@ -60,6 +66,7 @@ def create_app() -> FastAPI:
     app.include_router(environment_controller.router)
     app.include_router(variable_controller.router)
     app.include_router(configuration_controller.router)
+    app.include_router(change_history_controller.router)
 
     return app
 

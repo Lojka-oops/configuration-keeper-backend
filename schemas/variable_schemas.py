@@ -16,11 +16,20 @@ class VariableSchema(BaseSchema):
 
 
 class VariableCreateSchema(BaseModel):
-    """Validates a request to create/update an variable
+    """Validates a request to create an variable
 
     """
 
     env_id: int = Field(..., description="Identifier of environment that owns this variable")
+    name: str = Field(..., description="Variable name")
+    value: str = Field(..., description="Variable value")
+
+
+class VariableUpdateSchema(BaseModel):
+    """Validates a request to update an variable
+
+    """
+
     name: str = Field(..., description="Variable name")
     value: str = Field(..., description="Variable value")
 

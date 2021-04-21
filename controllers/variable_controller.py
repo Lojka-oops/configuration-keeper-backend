@@ -29,7 +29,7 @@ async def create(
 @inject
 async def update(
     var_id: int, 
-    var_data: variable_schemas.VariableCreateSchema,
+    var_data: variable_schemas.VariableUpdateSchema,
     var_service: VariableService = Depends(Provide[Container.var_service]),
     change_hostory_service: ChangeHistoryService = Depends(Provide[Container.change_history_service])
 ) -> Response:
@@ -70,7 +70,7 @@ async def get_list(
 
     """
 
-    total_cout = await var_service.get_count(env_id)
+    total_count = await var_service.get_count(env_id)
     variables = await var_service.get_list(env_id, page, per_page)
     
-    return {"total_count": total_cout, "data": variables}
+    return {"total_count": total_count, "data": variables}

@@ -69,7 +69,7 @@ async def get_list(
 
     """
 
-    total_cout = await app_service.get_count()
+    total_count = await app_service.get_count()
     applications = await app_service.get_list(page, per_page)
     
-    return {"total_count": total_cout, "data": applications}
+    return {"total_count": total_count, "data": applications}

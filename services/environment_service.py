@@ -6,7 +6,7 @@ from databases.backends.postgres import Record
 from sqlalchemy import desc, func, select, and_
 
 from models.environments import environments_table
-from schemas.environment_schemas import EnvironmentCreateSchema
+from schemas.environment_schemas import EnvironmentCreateSchema, EnvironmentUpdateSchema
 from .base_service import BaseService
 from .variable_service import VariableService
 
@@ -74,13 +74,13 @@ class EnvironmentService(BaseService):
     async def update(
         self,
         id: int,
-        data: EnvironmentCreateSchema
+        data: EnvironmentUpdateSchema
     ) -> Record:
         """Updates an environment according to the passed data
 
         :param `id` - identifier of environment
 
-        :param `data` - an instance of `EnvironmentCreateSchema`
+        :param `data` - an instance of `EnvironmentUpdateSchema`
         which provide data to update an environment
 
         :return an instance of `databases.backends.postgres.Record`
@@ -161,17 +161,17 @@ class EnvironmentService(BaseService):
 
     async def get_list(
         self,
+        app_id: int,
         page: int,
         per_page: int,
-        app_id: int = None
     ) -> List[Record]:
         """Selects all environments for application from the database
+
+        :param `app_id` - application identifier
 
         :param `page` - page number
 
         :param `per_page` - number of entities on one page
-
-        :optional param `app_id` - application identifier
 
         :return list of `databases.backends.postgres.Record`
         which provide environment data

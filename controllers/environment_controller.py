@@ -33,7 +33,7 @@ async def create(
 @inject
 async def update(
     env_id: int, 
-    env_data: environment_schemas.EnvironmentCreateSchema,
+    env_data: environment_schemas.EnvironmentUpdateSchema,
     env_service: EnvironmentService = Depends(Provide[Container.env_service]),
     change_hostory_service: ChangeHistoryService = Depends(Provide[Container.change_history_service])
 ) -> Response:
@@ -74,7 +74,7 @@ async def get_list(
 
     """
 
-    total_cout = await env_service.get_count(app_id)
+    total_count = await env_service.get_count(app_id)
     envs = await env_service.get_list(app_id, page, per_page)
     
-    return {"total_count": total_cout, "data": envs}
+    return {"total_count": total_count, "data": envs}

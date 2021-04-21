@@ -7,7 +7,7 @@ from sqlalchemy import desc, func, select, and_
 
 from models.variables import variables_table
 from .base_service import BaseService
-from schemas.variable_schemas import VariableCreateSchema
+from schemas.variable_schemas import VariableCreateSchema, VariableUpdateSchema
 
 
 class VariableService(BaseService):
@@ -63,13 +63,13 @@ class VariableService(BaseService):
     async def update(
         self,
         id: int,
-        data: VariableCreateSchema
+        data: VariableUpdateSchema
     ) -> Record:
         """Updates an variable according to the passed data
 
         :param `id` - identifier of variable
 
-        :param `data` - an instance of `VariableCreateSchema`
+        :param `data` - an instance of `VariableUpdateSchema`
         which provide data to update an variable
 
         :return an instance of `databases.backends.postgres.Record`
@@ -155,9 +155,9 @@ class VariableService(BaseService):
 
         :param `env_id` - environment identifier
 
-        :param `page` - page number
+        :optional param `page` - page number
 
-        :param `per_page` - number of entities on one page
+        :optional param `per_page` - number of entities on one page
 
         :return list of `databases.backends.postgres.Record`
         which provide variable data
