@@ -1,18 +1,19 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, Response
 
-from schemas import configurations_schemas
+from schemas import configuration_schemas
 from services.variable_service import VariableService
 from services.environment_service import EnvironmentService
 from helpers.dependencies import basic_auth
 from containers import Container
+
 
 router = APIRouter(tags=['configurations'])
 
 
 @router.get(
     "/configurations", 
-    response_model=configurations_schemas.ConfigurationSchema,
+    response_model=configuration_schemas.ConfigurationSchema,
     dependencies=[Depends(basic_auth)]
 )
 @inject
@@ -25,7 +26,7 @@ async def get_configuration(
 
     """
 
-    environment = await env_service.get_env_by_code(code)    
-    variables = await var_service.get_vars(environment['id'])
+    environment = await env_service.get_one_by_code(code)    
+    variables = await var_service.get_list(environment['id'])
 
     return {'environment_name': environment['name'], 'variables': variables}

@@ -16,7 +16,7 @@ variables_table = sqlalchemy.Table(
         nullable=False
     ),
     sqlalchemy.Column("env_id", sqlalchemy.ForeignKey(environments_table.c.id, ondelete="CASCADE"), index=True),
-    sqlalchemy.Column("created_at", sqlalchemy.DateTime()),
+    sqlalchemy.Column("created_at", sqlalchemy.DateTime(), nullable=False),
     sqlalchemy.Column("updated_at", sqlalchemy.DateTime()),
     sqlalchemy.Column("deleted_at", sqlalchemy.DateTime())
 )

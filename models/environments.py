@@ -25,7 +25,7 @@ environments_table = sqlalchemy.Table(
         server_default=sqlalchemy.sql.expression.false(),
         nullable=False
     ),
-    sqlalchemy.Column("created_at", sqlalchemy.DateTime()),
+    sqlalchemy.Column("created_at", sqlalchemy.DateTime(), nullable=False),
     sqlalchemy.Column("updated_at", sqlalchemy.DateTime()),
     sqlalchemy.Column("deleted_at", sqlalchemy.DateTime())
 )

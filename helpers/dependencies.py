@@ -14,7 +14,7 @@ def basic_auth(
     basic_auth_username: str = Depends(Provide[Container.config.basic_auth.username]),
     basic_auth_password: str = Depends(Provide[Container.config.basic_auth.password]),
     credentials: HTTPBasicCredentials = Depends(basic_auth_scheme)
-):
+) -> None:
     """Checks basic auth credentials
     
     """
