@@ -37,8 +37,7 @@ async def update(
 
     """
     
-    old_app_data = await app_service.get_one(app_id)
-    await change_hostory_service.make_history(app_id, 'Application', app_data, old_app_data)
+    await change_hostory_service.make_history(app_id, 'applications', app_data)
 
     return await app_service.update(app_id, app_data)
 

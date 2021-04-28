@@ -41,8 +41,7 @@ async def update(
 
     """
 
-    old_env_data = await env_service.get_one(env_id)
-    await change_hostory_service.make_history(env_id, 'Environment', env_data, old_env_data)
+    await change_hostory_service.make_history(env_id, 'environments', env_data)
 
     return await env_service.update(id=env_id, data=env_data)
 

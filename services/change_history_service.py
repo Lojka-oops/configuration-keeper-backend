@@ -9,6 +9,9 @@ from pydantic import BaseModel
 from models.change_history import change_history_table
 from schemas.base_schemas import BaseSchema
 from .base_service import BaseService
+from .application_service import ApplicationService
+from .environment_service import EnvironmentService
+from .variable_service import VariableService
 
 
 class ChangeHistoryService(BaseService):
@@ -18,7 +21,10 @@ class ChangeHistoryService(BaseService):
 
     def __init__(
         self,
-        database: Database
+        database: Database,
+        app_service: ApplicationService,
+        env_service: EnvironmentService,
+        var_service: VariableService
     ) -> None:
         """Construct a new :class: `ChangeHistoryService`
 
@@ -28,26 +34,35 @@ class ChangeHistoryService(BaseService):
         """
 
         self.database = database
+        self.app_service = app_service
+        self.env_service = env_service
+        self.var_service = var_service
 
     async def make_history(
         self,
         entity_id: int,
         entity_type: str,
-        entity_new_data: BaseModel,
-        entity_old_data: BaseModel
+        entity_new_data: BaseModel
     ) -> None:
         """Compares old and new entity data and create change history entity
         for each difference
 
         :param `entity_id` - entity id
 
-        :param `entity_type` - type of entity (Application, Environment, Variable)
+        :param `entity_type` - type of entity (applications, environments, variables)
 
         :param `entity_new_data` - entity new data
 
-        :param `entity_old_data` - entity old data
-
         """
+
+        if entity_type == 'applications':
+            entity_old_data = await self.app_service.get_one(entity_id)
+        elif entity_type == 'environments':
+            entity_old_data = await self.env_service.get_one(entity_id)
+        elif entity_type == 'variables':
+            entity_old_data = await self.var_service.get_one(entity_id)
+        else:
+            raise Exception('Unexpected entity type!')
 
         update_date = datetime.now()
 

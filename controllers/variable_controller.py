@@ -37,8 +37,7 @@ async def update(
 
     """
 
-    old_var_data = await var_service.get_one(var_id)
-    await change_hostory_service.make_history(var_id, 'Variable', var_data, old_var_data)
+    await change_hostory_service.make_history(var_id, 'variables', var_data)
 
     return await var_service.update(id=var_id, data=var_data)
 

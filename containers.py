@@ -35,5 +35,8 @@ class Container(containers.DeclarativeContainer):
 
     change_history_service = providers.Factory(
         ChangeHistoryService,
-        database=database
+        database=database,
+        app_service=app_service,
+        env_service=env_service,
+        var_service=var_service
     )
