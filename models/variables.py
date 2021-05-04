@@ -2,6 +2,7 @@ import sqlalchemy
 
 from .environments import environments_table
 
+
 metadata = sqlalchemy.MetaData()
 
 variables_table = sqlalchemy.Table(

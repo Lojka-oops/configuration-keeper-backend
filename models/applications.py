@@ -1,5 +1,6 @@
 import sqlalchemy
 
+
 metadata = sqlalchemy.MetaData()
 
 applications_table = sqlalchemy.Table(

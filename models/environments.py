@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from .applications import applications_table
 
+
 metadata = sqlalchemy.MetaData()
 
 environments_table = sqlalchemy.Table(
